@@ -1,5 +1,6 @@
 package fr.lernejo.travelsite.travel;
 
+import fr.lernejo.travelsite.Service;
 import fr.lernejo.travelsite.inscription.Inscription;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,10 +10,11 @@ import java.util.ArrayList;
 public class ControllerTravel {
 
     private final ArrayList<Inscription> inscriptionList;
+    private final Service service;
 
-
-    public ControllerTravel(ArrayList<Travel> travelList) {
+    public ControllerTravel(Service service) {
         this.inscriptionList = new ArrayList<>();
+        this.service = service;
     }
 
 
