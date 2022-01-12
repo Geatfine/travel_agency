@@ -1,4 +1,4 @@
-package fr.lernejo.travelsite.temperature;
+package fr.lernejo.prediction;
 public class Temperature {
     public String date;
     public Double temperature;

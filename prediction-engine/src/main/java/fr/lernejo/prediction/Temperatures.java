@@ -1,4 +1,4 @@
-package fr.lernejo.travelsite.temperature;
+package fr.lernejo.prediction;
 
 import java.util.List;
 

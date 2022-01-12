@@ -1,5 +1,11 @@
 package fr.lernejo.travelsite.travel;
 
-public record Travel (String country, double temperature) {
+public class Travel {
+    public String country;
+    public double temperature;
 
+    public Travel(String country, double temperature) {
+        this.country = country;
+        this.temperature = temperature;
+    }
 }

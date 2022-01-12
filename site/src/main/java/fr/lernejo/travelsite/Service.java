@@ -17,11 +17,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @org.springframework.stereotype.Service
-public record Service(PredictionEngineClient pec) {
+public class Service {
+
+    final PredictionEngineClient pec;
+
+    public Service(PredictionEngineClient pec) {
+        this.pec = pec;
+    }
 
     public Temperatures getTemperature(String country){
         try {
-            return pec.getTemperature(country).execute().body();
+
+            return pec.getTempListPerCountry(country).execute().body();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -38,14 +45,14 @@ public record Service(PredictionEngineClient pec) {
         List<Travel> returnList = new ArrayList<>();
         if (listTemperatures != null && tempUser != null)
             for (Temperatures t : listTemperatures) {
-                if (t != null ){
+                if (t != null ) {
                     double moyTemp = calculeMoyTemp(t);
                     if (inscription.weatherExpectation().equals(TemperatureExpectation.COLDER.toString())) {
                         if (tempUser - moyTemp >= inscription.minimumTemperatureDistance())
-                            returnList.add(new Travel(t.country(), moyTemp));
-                    }else {
-                        if (Math.abs(tempUser - moyTemp) >= inscription.minimumTemperatureDistance())
-                            returnList.add(new Travel(t.country(), moyTemp));
+                            returnList.add(new Travel(t.country, moyTemp));
+                    } else {
+                        if (tempUser - moyTemp <= -1 * inscription.minimumTemperatureDistance())
+                            returnList.add(new Travel(t.country, moyTemp));
                     }
                 }
             }
@@ -69,15 +76,15 @@ public record Service(PredictionEngineClient pec) {
         Double moy = null;
         if(temp!=null) {
             moy = 0.0;
-            for (Temperature t : temp.temperatures())
-                moy += t.temperature();
+            for (Temperature t : temp.temperatures)
+                moy += t.temperature;
             moy /= 2;
         }
         return moy;
     }
 
     private List<Temperatures> getCountrysTemp(List<String> pays){
-        ArrayList<Temperatures> listTemp = new ArrayList<>();
+        List<Temperatures> listTemp = new ArrayList<>();
         for (String s: pays) {
             Temperatures temp = getTemperature(s);
             if (temp != null)
