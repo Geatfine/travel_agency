@@ -1,7 +1,6 @@
 package fr.lernejo.travelsite.temperature;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.List;
 
-public record Temperatures(String country, ArrayList<Temperature> temperatures) {
+public record Temperatures(String country, List<Temperature> temperatures) {
 }

@@ -10,20 +10,21 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class ControllerPrediction {
 
     @GetMapping("/api/temperature")
-    public Object getTempListPerCountry(@RequestParam String country){
+    public Temperatures getTempListPerCountry(@RequestParam String country){
         try {
             LocalDate today= LocalDate.now();
-            ArrayList<Temperature> listTemp = new ArrayList<>();
+            List<Temperature> listTemp = new ArrayList<>();
             listTemp.add(new Temperature(new SimpleDateFormat("yyyy-MM-dd").format(new Date()),new TemperatureService().getTemperature(country)));
-            listTemp.add(new Temperature(new SimpleDateFormat("yyyy-MM-dd").format(today.minusDays(1)),new TemperatureService().getTemperature(country)));
+            listTemp.add(new Temperature(LocalDate.now().minusDays(1).toString(), new TemperatureService().getTemperature(country)));
             return new Temperatures(country,listTemp);
         }catch (UnknownCountryException e){
-            return ResponseEntity.status(417).body("Unknown username (CODE 417)");
+            return null;
         }
     }
 

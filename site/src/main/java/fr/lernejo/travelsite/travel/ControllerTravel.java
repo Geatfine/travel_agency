@@ -5,6 +5,7 @@ import fr.lernejo.travelsite.inscription.Inscription;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class ControllerTravel {
@@ -24,7 +25,11 @@ public class ControllerTravel {
     }
 
     @GetMapping("/api/travels")
-    public ArrayList<Travel> apiTravel(@RequestParam String userName){
+    public List<Travel> apiTravel(@RequestParam String userName){
+        for (Inscription i: inscriptionList) {
+            if (i.userName().equals(userName))
+                return service.getTravels(i);
+        }
         return null;
     }
 }
