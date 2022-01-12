@@ -1,8 +1,8 @@
 package fr.lernejo.travelsite.travel;
 
 public class Travel {
-    public String country;
-    public double temperature;
+    public final String country;
+    public final double temperature;
 
     public Travel(String country, double temperature) {
         this.country = country;

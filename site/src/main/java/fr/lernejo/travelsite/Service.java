@@ -5,6 +5,7 @@ import fr.lernejo.travelsite.temperature.Temperature;
 import fr.lernejo.travelsite.temperature.TemperatureExpectation;
 import fr.lernejo.travelsite.temperature.Temperatures;
 import fr.lernejo.travelsite.travel.Travel;
+import org.springframework.boot.autoconfigure.integration.IntegrationDataSourceScriptDatabaseInitializer;
 import retrofit2.http.GET;
 
 import java.io.IOException;
@@ -36,7 +37,6 @@ public class Service {
     }
 
     public List<Travel> getTravels(Inscription inscription) {
-        //, Parcourir reste si match conditions alors retourner list // Tester 2 conditions : non null et et check bien object temp
         List<String> pays = getCountryList();
         Double tempUser = calculeMoyTemp(getTemperature(inscription.userCountry()));
         List<Temperatures> listTemperatures = null;
@@ -44,19 +44,24 @@ public class Service {
             listTemperatures = getCountrysTemp(pays);
         List<Travel> returnList = new ArrayList<>();
         if (listTemperatures != null && tempUser != null)
-            for (Temperatures t : listTemperatures) {
-                if (t != null ) {
-                    double moyTemp = calculeMoyTemp(t);
-                    if (inscription.weatherExpectation().equals(TemperatureExpectation.COLDER.toString())) {
-                        if (tempUser - moyTemp >= inscription.minimumTemperatureDistance())
-                            returnList.add(new Travel(t.country, moyTemp));
-                    } else {
-                        if (tempUser - moyTemp <= -1 * inscription.minimumTemperatureDistance())
-                            returnList.add(new Travel(t.country, moyTemp));
-                    }
-                }
+            for (Temperatures t : listTemperatures){
+                Travel trav = checkMinimumTemperatureDistance(t, tempUser, inscription);
+                if (trav != null)
+                    returnList.add(trav);
             }
         return returnList;
+    }
+    private Travel checkMinimumTemperatureDistance(Temperatures t , double tempUser, Inscription inscription){
+            if (t != null ) {
+                double moyTemp = calculeMoyTemp(t);
+                if (inscription.weatherExpectation().equals(TemperatureExpectation.COLDER.toString()))
+                    if (tempUser - moyTemp >= inscription.minimumTemperatureDistance())
+                        return new Travel(t.country, moyTemp);
+                    else
+                    if (tempUser - moyTemp <= -1 * inscription.minimumTemperatureDistance())
+                        return new Travel(t.country, moyTemp);
+            }
+            return null;
     }
     private List<String> getCountryList() {
         try {
@@ -71,6 +76,7 @@ public class Service {
             return null;
         }
     }
+
 
     private Double calculeMoyTemp(Temperatures temp){
         Double moy = null;
