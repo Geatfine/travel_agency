@@ -54,12 +54,12 @@ public class Service {
     private Travel checkMinimumTemperatureDistance(Temperatures t , double tempUser, Inscription inscription){
             if (t != null ) {
                 double moyTemp = calculeMoyTemp(t);
-                if (inscription.weatherExpectation().equals(TemperatureExpectation.COLDER.toString()))
+                if (inscription.weatherExpectation().equals(TemperatureExpectation.COLDER.toString())) {
                     if (tempUser - moyTemp >= inscription.minimumTemperatureDistance())
                         return new Travel(t.country, moyTemp);
-                    else
-                    if (tempUser - moyTemp <= -1 * inscription.minimumTemperatureDistance())
-                        return new Travel(t.country, moyTemp);
+                }else{
+                    if (tempUser - moyTemp <= (-1 * inscription.minimumTemperatureDistance()))
+                        return new Travel(t.country, moyTemp);}
             }
             return null;
     }
